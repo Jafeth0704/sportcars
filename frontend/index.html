@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b10">
+  <meta name="description" content="SportCars: catálogo de carros deportivos y sus especificaciones.">
+  <title>SportCars | El mundo de los deportivos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="SportCars inicio"><span class="brand-mark">S</span><span>SPORT<span class="accent">CARS</span></span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <nav id="mainNav">
+      <a href="#inicio">Inicio</a>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#nosotros">Proyecto</a>
+      <button class="nav-admin" id="openAdmin">Administrar vehículos <span>↗</span></button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="eyebrow"><span class="eyebrow-line"></span> INGENIERÍA · DISEÑO · VELOCIDAD</p>
+        <h1>LA PASIÓN<br>NO TIENE <span class="accent">LÍMITES.</span></h1>
+        <p class="hero-copy">Explora el universo de los carros deportivos. Conoce sus diseños, potencia y tecnología en un solo lugar.</p>
+        <a class="primary-btn" href="#catalogo">EXPLORAR CATÁLOGO <span>↘</span></a>
+        <div class="hero-stats">
+          <div><strong id="heroCount">—</strong><span>VEHÍCULOS</span></div>
+          <div><strong>01</strong><span>SOLO DESTINO</span></div>
+          <div><strong>100%</strong><span>PASIÓN</span></div>
+        </div>
+      </div>
+      <div class="hero-caption">SPORTCARS / PERFORMANCE COLLECTION</div>
+    </section>
+
+    <section class="catalog section-wrap" id="catalogo">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span class="eyebrow-line"></span> NUESTRA COLECCIÓN</p><h2>ENCUENTRA TU <span class="accent">DEPORTIVO.</span></h2></div>
+        <p class="section-description">Cada vehículo tiene una historia. Descubre sus especificaciones y encuentra el que más te impresiona.</p>
+      </div>
+      <div class="toolbar">
+        <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar marca o modelo..." autocomplete="off"></label>
+        <label class="filter-label">ORDENAR POR
+          <select id="sortSelect">
+            <option value="marca-asc">Marca A–Z</option>
+            <option value="marca-desc">Marca Z–A</option>
+            <option value="anio-desc">Año más reciente</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="potencia-desc">Mayor potencia</option>
+          </select>
+        </label>
+        <button class="outline-btn" id="refreshBtn">↻ Actualizar</button>
+      </div>
+      <div class="status-line"><span id="resultCount">Cargando vehículos...</span><span class="live-dot"></span><span>CATÁLOGO EN VIVO</span></div>
+      <div id="carGrid" class="car-grid" aria-live="polite"></div>
+      <div id="emptyState" class="empty-state hidden"><span>⌕</span><h3>No encontramos vehículos</h3><p>Prueba otra búsqueda o registra un nuevo carro deportivo.</p><button class="primary-btn" id="emptyAdd">REGISTRAR VEHÍCULO</button></div>
+      <div id="errorState" class="error-state hidden"></div>
+    </section>
+
+    <section class="feature-band" id="nosotros">
+      <div class="feature-image"></div>
+      <div class="feature-copy"><p class="eyebrow"><span class="eyebrow-line"></span> SOBRE SPORTCARS</p><h2>LA TECNOLOGÍA<br>DETRÁS DE <span class="accent">LA PASIÓN.</span></h2><p>SportCars es un catálogo web para explorar y administrar información de vehículos deportivos. La aplicación utiliza una API desarrollada con Python y FastAPI, y almacena los datos en SQLite.</p><div class="tech-pills"><span>PYTHON</span><span>FASTAPI</span><span>SQLITE</span><span>JAVASCRIPT</span></div></div>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#inicio"><span class="brand-mark">S</span><span>SPORT<span class="accent">CARS</span></span></a><p>Diseñado para quienes viven la velocidad.</p><span class="footer-copy">© <span id="year"></span> SPORTCARS · PROYECTO WEB</span></footer>
+
+  <div class="modal-backdrop hidden" id="carModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-top"><div><p class="eyebrow">FICHA DEL VEHÍCULO</p><h2 id="modalTitle">DETALLES</h2></div><button class="icon-btn" data-close="carModal" aria-label="Cerrar">×</button></div>
+      <div id="carDetails" class="car-details"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="modal admin-modal">
+      <div class="modal-top"><div><p class="eyebrow">GESTIÓN DEL CATÁLOGO</p><h2 id="adminTitle">ADMINISTRAR <span class="accent">VEHÍCULOS</span></h2></div><button class="icon-btn" data-close="adminModal" aria-label="Cerrar">×</button></div>
+      <p class="form-intro">Registra un vehículo o selecciona uno de la lista para editarlo o eliminarlo. Los cambios se guardan en la base de datos.</p>
+      <form id="carForm">
+        <input type="hidden" id="carId">
+        <div class="form-grid">
+          <label>Marca *<input id="marca" required minlength="2" maxlength="60" placeholder="Ej. Porsche"></label>
+          <label>Modelo *<input id="modelo" required maxlength="80" placeholder="Ej. 911 GT3"></label>
+          <label>Año *<input id="anio" required type="number" min="1950" max="2100" placeholder="2024"></label>
+          <label>Potencia (HP) *<input id="potencia" required type="number" min="1" max="5000" placeholder="502"></label>
+          <label>Velocidad máxima (km/h) *<input id="velocidad_maxima" required type="number" min="1" max="1000" placeholder="318"></label>
+          <label>Precio estimado (USD) *<input id="precio" required type="number" min="0" step="0.01" placeholder="224000"></label>
+          <label class="full-field">URL de imagen<input id="imagen" type="url" maxlength="1000" placeholder="https://..."></label>
+          <label class="full-field">Descripción<textarea id="descripcion" rows="3" maxlength="2000" placeholder="Características principales..."></textarea></label>
+        </div>
+        <div id="formMessage" class="form-message" role="status"></div>
+        <div class="form-actions"><button class="primary-btn" type="submit" id="saveBtn">GUARDAR VEHÍCULO</button><button class="outline-btn hidden" type="button" id="cancelEdit">CANCELAR EDICIÓN</button></div>
+      </form>
+      <div class="admin-list-heading"><h3>VEHÍCULOS REGISTRADOS</h3><span id="adminCount">0 registros</span></div>
+      <div id="adminList" class="admin-list"></div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

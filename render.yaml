@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: sportcars-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: DATABASE_PATH
+        value: /var/data/sportcars.db
+      - key: CORS_ORIGINS
+        value: "*"
+    # For persistent SQLite storage on Render, attach a persistent disk at /var/data.
+    # Persistent disks may require a paid plan.
